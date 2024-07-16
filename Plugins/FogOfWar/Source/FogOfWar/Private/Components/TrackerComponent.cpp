@@ -64,7 +64,6 @@ void UTrackerComponent::BeginPlay()
 		SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 		SetCollisionResponseToChannel(ECC_Destructible, ECR_Overlap);
-		SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 		OnComponentBeginOverlap.AddDynamic(this, &UTrackerComponent::Server_OnActorBeginOverlap);
 		OnComponentEndOverlap.AddDynamic(this, &UTrackerComponent::Server_OnActorEndOverlap);
 	}
