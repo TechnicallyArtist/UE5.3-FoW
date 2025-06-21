@@ -1,14 +1,19 @@
 ﻿// Copyright TechnicallyArtist
 
-
 #include "Actors/FogManager.h"
 
 #include "Components/BeaconComponent.h"
 #include "Components/PostProcessComponent.h"
 #include "Components/TrackerComponent.h"
+#include "Engine/Level.h"
+#include "Engine/Texture.h"
+#include "Engine/Texture2D.h"
+#include "Engine/World.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/PlayerController.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
-AFogManager::AFogManager(): FogMaterial(nullptr), FoWMaterialInstance(nullptr), FogPostProcessComponent(nullptr)
+AFogManager::AFogManager()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -36,11 +41,12 @@ void AFogManager::BeginPlay()
 	// set Texture Parameter to FloorMapTexture
 	if (FloorMapTexture)
 	{
+		// UTexture2D inherits from UTexture, so we can pass it directly
 		FoWMaterialInstance->SetTextureParameterValue(FName("FloorMap"), FloorMapTexture);
 	}
 
 	FogPostProcessComponent->Settings.WeightedBlendables.Array.Empty();
-	FogPostProcessComponent->AddOrUpdateBlendable(FoWMaterialInstance);
+	FogPostProcessComponent->AddOrUpdateBlendable(TScriptInterface<IBlendableInterface>(FoWMaterialInstance));
 }
 
 void AFogManager::Tick(float DeltaSeconds)

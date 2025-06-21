@@ -23,5 +23,5 @@ class FOGOFWARPROJECT_API ITeamInterface
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	FTeamData GetTeamInfo() const;
+	void GetTeamInfo(FTeamData &OutTeamData) const;
 };

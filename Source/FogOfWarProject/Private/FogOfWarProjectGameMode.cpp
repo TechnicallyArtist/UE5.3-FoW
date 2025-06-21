@@ -93,8 +93,9 @@ void AFogOfWarProjectGameMode::SetEnemiesForPlayer(const AFoWHeroCharacter* cons
 		// But this can be any actor in your project, depends on your setup
 		if (const auto PotentialEnemy = Cast<AFoWBaseCharacter>(Actor))
 		{
-			const auto HeroCharacterTeamInfo = ITeamInterface::Execute_GetTeamInfo(HeroCharacter);
-			const auto EnemyCharacterTeamInfo = ITeamInterface::Execute_GetTeamInfo(PotentialEnemy);
+			FTeamData HeroCharacterTeamInfo, EnemyCharacterTeamInfo;
+			ITeamInterface::Execute_GetTeamInfo(HeroCharacter, HeroCharacterTeamInfo);
+			ITeamInterface::Execute_GetTeamInfo(PotentialEnemy, EnemyCharacterTeamInfo);
 
 			if ((HeroCharacterTeamInfo.Name != ETeam::None && EnemyCharacterTeamInfo.Name != ETeam::None) && (HeroCharacterTeamInfo.Name != EnemyCharacterTeamInfo.Name))
 			{
@@ -116,8 +117,9 @@ void AFogOfWarProjectGameMode::SetBeaconsForPlayer(const AFoWHeroCharacter* Hero
 
 		if (const auto BeaconComponent = PotentialBeaconActor->FindComponentByClass<UBeaconComponent>())
 		{
-			const auto HeroCharacterTeamInfo = ITeamInterface::Execute_GetTeamInfo(HeroCharacter);
-			const auto BeaconCharacterTeamInfo = ITeamInterface::Execute_GetTeamInfo(PotentialBeaconActor);
+			FTeamData HeroCharacterTeamInfo, BeaconCharacterTeamInfo;
+			ITeamInterface::Execute_GetTeamInfo(HeroCharacter, HeroCharacterTeamInfo);
+			ITeamInterface::Execute_GetTeamInfo(PotentialBeaconActor, BeaconCharacterTeamInfo);
 
 			if ((HeroCharacterTeamInfo.Name != ETeam::None && BeaconCharacterTeamInfo.Name != ETeam::None) && (HeroCharacterTeamInfo.Name == BeaconCharacterTeamInfo.Name))
 			{

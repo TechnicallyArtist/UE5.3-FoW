@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "Materials/MaterialInterface.h"
+#include "Engine/Texture2D.h"
 
 #include "FogManager.generated.h"
 
@@ -10,6 +13,7 @@ class UTrackerComponent;
 class UNiagaraComponent;
 class UBeaconComponent;
 class UPostProcessComponent;
+class UMaterialInstanceDynamic;
 
 /**
  * - Updates postprocess with the location of locally controlled character.
@@ -31,7 +35,7 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 	/** Used to get all actors which should be excluded from casting shadows. */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="Fog of War")
 	TArray<AActor*> GetAllNonOccludingActors() const;
 public:
 	FORCEINLINE float GetMapSize() const { return MapSize; }
@@ -58,22 +62,22 @@ protected:
 #pragma endregion
 
 protected:
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category="Fog of War")
 	UMaterialInstanceDynamic* FoWMaterialInstance;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category="Fog of War")
 	UTrackerComponent* LocalTracker;
 
 private:
 	UPROPERTY()
 	UPostProcessComponent* FogPostProcessComponent;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="Fog of War")
 	UTrackerComponent* GetLocalTracker();
 
 #pragma region Beacon locations
 protected:
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, Category="Fog of War")
 	TArray<FVector4> BeaconLocationsAndSizes;
 private:
 	void UpdateBeaconLocations();

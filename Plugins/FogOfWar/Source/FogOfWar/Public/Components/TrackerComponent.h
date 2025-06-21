@@ -23,10 +23,10 @@ public:
 	 * meaning it is covered by fog of war and uncovered when close by.
 	 * This should only be called on server.
 	 */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="Fog of War")
 	void AssignEnemy(AActor* TrackedEnemy);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="Fog of War")
 	void AssignBeacon(AActor* TrackedBeaconActor);
 
 	UFUNCTION()

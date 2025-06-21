@@ -1,16 +1,17 @@
 // Copyright TechnicallyArtist
 
-
 #include "Components/TrackerComponent.h"
 
 #include "Components/BeaconComponent.h"
+#include "Engine/World.h"
+#include "Engine/Engine.h"
+#include "GameFramework/Actor.h"
 
 UTrackerComponent::UTrackerComponent()
 {
 	SphereRadius = 400.f;
 	PrimaryComponentTick.bCanEverTick = true;
 
-	UPrimitiveComponent::SetCollisionResponseToAllChannels(ECR_Ignore);
 	UPrimitiveComponent::SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	UPrimitiveComponent::SetCollisionObjectType(ECC_WorldDynamic);
 }
@@ -62,8 +63,6 @@ void UTrackerComponent::BeginPlay()
 	if (GetOwner()->HasAuthority())
 	{
 		SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-		SetCollisionResponseToChannel(ECC_Destructible, ECR_Overlap);
 		OnComponentBeginOverlap.AddDynamic(this, &UTrackerComponent::Server_OnActorBeginOverlap);
 		OnComponentEndOverlap.AddDynamic(this, &UTrackerComponent::Server_OnActorEndOverlap);
 	}
@@ -86,6 +85,7 @@ void UTrackerComponent::AssignBeacon(AActor* TrackedBeaconActor)
 	if (const auto ActorBeaconComponent = TrackedBeaconActor->FindComponentByClass<UBeaconComponent>())
 	{
 		ActorBeaconComponent->GetOwner()->SetOwner(GetOwner());
+		ActorBeaconComponent->AssignTracker(this);
 		TrackedBeacons.Add(ActorBeaconComponent);
 		Client_AssignBeacon(TrackedBeaconActor);
 	} else
@@ -108,7 +108,13 @@ void UTrackerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void UTrackerComponent::Server_OnActorBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!GetOwner()->HasAuthority() || (OtherActor == GetOwner()) || !OtherActor || !TrackedEnemyActors.Contains(OtherActor)) return;
+	if (
+		!GetOwner()->HasAuthority()
+		|| OtherActor == GetOwner()
+		|| !OtherActor
+		|| !TrackedEnemyActors.Contains(OtherActor)
+		|| OtherComp->IsA<UBeaconComponent>()
+		|| OtherComp->IsA<UTrackerComponent>()) return;
 
 	OverlappingEnemyActors.Add(OtherActor);
 }

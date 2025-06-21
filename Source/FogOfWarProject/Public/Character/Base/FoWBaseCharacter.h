@@ -30,7 +30,7 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void Server_SetTeam(const int32 InTeamNumber);
 
-	virtual FTeamData GetTeamInfo_Implementation() const override { return TeamInfo; }
+	virtual void GetTeamInfo_Implementation(FTeamData &OutTeamData) const override { OutTeamData = TeamInfo; }
 protected:
 	/**
 	 * This can probably be kept on another class, such as player state.
